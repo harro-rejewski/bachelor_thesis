@@ -6,7 +6,12 @@ Dieses Repository enthält die Analyseskripte für meine Bachelorarbeit im Fach 
 
 ## Anwendung
 
-Der zentrale Bestandteil des Repositories ist der Ordner `R`. Dieser enthält die Daten und Analyseskripte, die für die Auswertung und Erstellung der Ergebnisse der Bachelorarbeit verwendet wurden.
+Der zentrale Bestandteil des Repositories ist der Ordner `R`. Dieser enthält die Analyseskripte, die für die Auswertung und Erstellung der Ergebnisse der Bachelorarbeit verwendet wurden.
+Die Daten sind über
+```link
+https://nextcloud.uni-greifswald.de/index.php/s/9fe4QgKxHQxcB9b
+```
+abrufbar. Für die Hauptanalyse muss der Ordner `data` in das Projektverzeichnis abgelegt werden.
 
 Über das Skript `main.R` können alle wichtigen Analyseskripte ausgeführt werden. Die berechneten Ergebnisse und Abbildungen werden im Ordner `Plots` abgelegt.
 
@@ -46,6 +51,7 @@ Die RStudio Umgebung ist dann in erreichbar über:
 http://localhost:8787/
 ```
 
+
 ## Sonstige Inhalte des Repositories
 
 ###  `Tex` (coming soon)
@@ -64,6 +70,4 @@ Der Ordner `Pamore Manger` enthält Python-Skripte, mit denen sich **ICON-D2-EPS
 
 ## Nicht enthaltene Daten
 
-Die rohen **ICON-D2-Modellvorhersagen** sowie die **HOSTRADA-Daten** sind aus Gründen der Dateigröße nicht Bestandteil dieses Repositories.
-
-Die entsprechenden Daten können auf Anfrage zur Verfügung gestellt werden.
+Die **ICON-D2-Modellvorhersagen** sowie die **HOSTRADA-Daten** sind aus Gründen der Dateigröße nicht Bestandteil dieses Repositories.
