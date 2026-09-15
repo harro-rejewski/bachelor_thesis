@@ -14,15 +14,14 @@ Der zentrale Bestandteil des Repositories ist der Ordner `R`. Dieser enthält di
 
 Um die Ergebnisse zu reproduzieren, stehen zwei Möglichkeiten zur Verfügung:
 
-* das bereitgestellte **Docker-Image** im Ordner `Docker`
-* die entsprechende **`.lock`-Datei**, über die die verwendeten R-Paketversionen nachvollzogen und reproduziert werden können
-
+* das bereitgestellte **Dockerfile** im Ordner `Docker`
+* die entsprechende **`.lock`-Datei** im Ordner `Docker`
 #### Docker
 
-Das Docker-Image kann beispielsweise mit folgendem Befehl erstellt werden:
+Das Docker-Image kann beispielsweise mit folgendem Befehl im Ordner Docker erstellt werden:
 
 ```bash
-docker build --no-cache -t geospatial-gribr .
+docker build --no-cache -t ba-rstudio:final .
 ```
 
 Anschließend kann ein Container erstellt und das Repository eingebunden werden:
@@ -48,6 +47,9 @@ http://localhost:8787/
 ```
 
 ## Sonstige Inhalte des Repositories
+
+###  `Tex` (coming soon)
+Latex Scripte zum erstellen der Arbeit
 
 ### `CDO`
 
