@@ -11,7 +11,7 @@ Die Daten sind über
 ```link
 https://nextcloud.uni-greifswald.de/index.php/s/9fe4QgKxHQxcB9b
 ```
-abrufbar. Für die Hauptanalyse muss der Ordner `data` in das Projektverzeichnis abgelegt werden.
+abrufbar. Für die Hauptanalyse muss der Ordner `data` in das Projektverzeichnis `R` abgelegt werden.
 
 Über das Skript `main.R` können alle wichtigen Analyseskripte ausgeführt werden. Die berechneten Ergebnisse und Abbildungen werden im Ordner `Plots` abgelegt.
 
