@@ -1,0 +1,1 @@
+cdo gennn,LCC.txt  -setgrid,icon_grid_0047_R19B07_L.nc:2 dummy_icon.grib2 direct_weights.nc

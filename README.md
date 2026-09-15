@@ -59,10 +59,7 @@ Latex Scripte zum Erstellen der Arbeit
 
 ### `CDO`
 
-Im Ordner `CDO` befinden sich:
-
-* die Gitterdefinitionen des **ICON-D2** und der **HOSTRADA**
-* ein CDO-Befehl zur Generierung einer Projektionsdatei für die verwendeten Gewichte
+Im Ordner `CDO` befindet sich der CDO-Befehl zur Generierung einer Projektionsdatei für die verwendeten Gewichte. Die Dateien dafür sind ebenfalls über den Nextcloudordner zugänglich.
 
 ### `Pamore Manger`
 
