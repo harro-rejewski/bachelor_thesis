@@ -49,7 +49,7 @@ http://localhost:8787/
 ## Sonstige Inhalte des Repositories
 
 ###  `Tex` (coming soon)
-Latex Scripte zum erstellen der Arbeit
+Latex Scripte zum Erstellen der Arbeit
 
 ### `CDO`
 
