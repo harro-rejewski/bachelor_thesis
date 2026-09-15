@@ -42,6 +42,11 @@ Der Container kann anschließend mit folgendem Befehl gestartet werden:
 docker start container-name
 ```
 
+Die RStudio Umgebung ist dann in erreichbar über:
+```bash
+http://localhost:8787/
+```
+
 ## Sonstige Inhalte des Repositories
 
 ### `CDO`
