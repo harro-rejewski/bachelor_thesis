@@ -1,0 +1,278 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{dsfont}
+
+\title{Exposé Bachelorarbeit: \\ \large Statistische Evaluation und Vergleich probabilistischer Temperaturvorhersagen}
+\author{Harro Rejewski}
+\date{März 2026}
+
+\usepackage[
+  style=apa,
+  backend=biber,
+  doi=true,
+  url=false
+]{biblatex}
+\addbibresource{ref.bib}
+\usepackage[ngerman]{babel}
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+\usepackage{siunitx}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\newtheorem{defi}{Definition}[section]
+\numberwithin{equation}{section}
+\usepackage{graphicx}
+\usepackage{geometry}
+
+%\usepackage{fontspec}
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=30mm,
+ right=30mm,
+ top=25mm,
+ }
+\begin{document}
+
+\maketitle
+
+%\section{Zusammenfassung}
+%Ziel meiner Arbeit ist es, probabilistische 2-m-Temperaturvorhersagen für ausgewählte Gebiete Deutschlands auf Basis des Ensemble-Wettermodells ICON-D2-esp zu evaluieren. Der theoretische Hintergrund fokussiert sich auf Möglichkeiten der Kalibrierungsüberprüfung sowie auf Scoring Rules und deren Zerlegung. Da Ensemblevorhersagen häufig systematische Fehler aufweisen, werden statistische Postprocessing-Methoden angewendet, um diese zu korrigieren. Die so nachbearbeiteten Vorhersagen werden anschließend mithilfe der im theoretischen Hintergrund erläuterten Methoden miteinander verglichen. Vor allem soll hierbei der Nutzten von Score Zerlegung herausgestellt werden. Als Verifikations- und Trainingsdatensatz dient der hochaufgelöste Rasterdatensatz Hostrada. Der Trainingszeitraum umfasst den Oktober 2025, der Evaluationszeitraum den November 2025.
+
+\section{Ziel der Arbeit}
+Hauptziel der Arbeit ist die Anwendung und Untersuchung moderner Evaluationsmethoden für probabilistische Vorhersagen am Beispiel von 2-m-Temperaturprognosen des ICON-D2-eps für ausgewählte Regionen Deutschlands verifiziert mit dem hochaufgelösten Rasterdatensatz Hostrada. Im Mittelpunkt steht dabei die Frage, wie unterschiedliche Konzepte der Kalibrierung sowie geeignete Scoring Rules und deren Zerlegung eingesetzt werden können, um die Qualität von Ensemblevorhersagen zu bewerten. Die probabilistischen Vorhersagen dienen dabei als Anwendungsfall, um die Aussagekraft der betrachteten Evaluationsansätze hinsichtlich Vorhersagegüte systematisch darzustellen.
+
+\section{Einleitung: Probabilistische Vorhersagen}
+Viele für uns Menschen akut relevante Ereignisse sind weder unmittelbar erfassbar noch direkt messbar, insbesondere solche, die in der Zukunft liegen. Um dennoch Aussagen über diese Ereignisse treffen zu können, erstellt man Vorhersagen. Jedoch sind Vorhersagen mit Unsicherheit behaftet. Diese Unsicherheit ergibt sich zum einen daraus, dass der Zustand der Welt nicht vollständig beobachtbar ist und die zugrunde liegenden Prozesse häufig nur näherungsweise dargestellt werden können. Zum anderen enthalten viele vorherzusagende Ereignisse Zufall oder Unvorhersehbarkeit, die nicht durch bessere Messungen oder genauere Modelle reduziert werden kann. Dennoch wird die mit Vorhersagen verbundene Unsicherheit in der Praxis häufig nicht explizit berücksichtigt. Stattdessen beschränken sich Vorhersagen oftmals auf punktuelle Aussagen oder vage Formulierungen, ohne Unsicherheiten systematisch zu quantifizieren.
+
+Probabilistische Vorhersagen sind Vorhersagen, die auf Wahrscheinlichkeitsverteilungen basieren. Im Alltag begegnet man ihnen etwa bei der Niederschlagswahrscheinlichkeit oder dem Chancenverhältnis im Wettbüro. Aber der Ansatz geht auch über diskrete Ereignisse wie Regen vs. nicht Regen oder gewinnen vs. verlieren hinaus. Betrachten wir etwa die Temperatur als stetige Größe zur Vorhersage. Zur Modellierung der Vorhersageunsicherheit können wir eine Normalverteilung als Näherung verwenden. Dann könnte eine probabilistische Vorhersage etwa lauten: Die Temperatur morgen entspricht einer Realisierung einer normalverteilten Zufallsvariablen mit Mittelwert \SI{10}{\celsius} und Standardabweichung \SI{2}{\celsius}. Aufbauend darauf könnte man Quantile angeben, die eine Interpretation zusätzlich erleichtern. Für das gegebene Beispiel ließe sich das 25\% Quantil folgendermaßen interpretieren: Mit einer Wahrscheinlichkeit von 25\% liegt die Temperatur bei höchstens \SI{8,65}{\celsius}. Diese Vorhersagewahrscheinlichkeit ergibt sich aus der modellierten Unsicherheit und beschreibt, welche Temperaturwerte gemäß der angenommenen Normalverteilung erwartet werden.
+
+Der entscheidende Vorteil von probabilistischen gegenüber deterministischen Vorhersagen, die lediglich \textit{einen} festen Wert angeben, liegt darin, dass sie die Unsicherheit der Vorhersagen explizit quantifiziert werden. Beispielsweise können Temperaturvorhersagen unterschiedliche Standardabweichungen aufweisen. Eine größere Standardabweichung bedeutet eine höhere Unsicherheit der Vorhersage, auf die man sich einstellen kann, etwa durch vorsorgliches Einpacken eines zusätzlichen Pullovers. Eine rein deterministische Vorhersage liefert keine solche Information und erlaubt daher keine entsprechende Anpassung.
+
+Probabilistische Vorhersagen sind damit in vielen Situationen den deterministischen vorzuziehen. Jedoch bringen sie eigene Herausforderungen mit sich. Entscheidend ist etwa die Evaluation der Vorhersage. 
+
+\section{Theoretischer Hintergrund: Evaluation von probabilistischen Vorhersagen}\label{sec:eval}
+Betrachten wir Vorhersagen und Beobachtungen als Zufallsvariablen, so sind nach \textcite{gneiting_probabilistic_2014} zwei wichtige Eigenschaften bei der Beurteilung von Vorhersageverteilungen zu beachten: Die Kalibrierung und Schärfe der Vorhersage. Kalibrierung beschreibt, inwieweit die vorhergesagte Verteilung der tatsächlichen Verteilung der Zielvariablen entspricht. Schärfe gibt an, wie eng bzw. konzentriert die Vorhersageverteilung ist. Ein gute Vorhersage ist demnach möglichst scharf unter Wahrung der Kalibrierung.
+
+Ergänzend lässt sich die Güte einer Vorhersageverteilung mithilfe von sogenannten Scoring-Rules bewerten. Dabei handelt es sich um Funktionen, die einer probabilistischen Vorhersage anhand von Verifikationsdaten einen numerischen Wert zuordnen. Auf diese Weise lassen sich unterschiedliche Vorhersagen einfach vergleichen; ein besserer Score entspricht einer höheren Vorhersagegüte. Scoring-Rules unterscheiden sich jedoch untereinander und weisen verschiedene Eigenschaften auf, die je nach Anwendungsfall von Bedeutung sein können. Zudem lassen sich einige Scoring-Rules in Komponenten zerlegen, die wiederum Kalibrierung und Schärfe widerspiegeln.
+
+Der Theoretische Hintergrund meiner Arbeit soll sich vor allem mit diesen Aspekten befassen und orientiert sich an \textcite{gneiting_regression_2023}. Im Hinblick auf die Kalibrierung werden zunächst die drei klassischen Konzepte Autokalibrierung, marginale Kalibrierung und probabilistische Kalibrierung eingeführt. Anschließend wird Kalibrierung im Kontext statistischer Funktionale behandelt, mit Fokus auf Quantil- und Schwellenwertkalibrierung. Danach werden beide Perspektiven im Rahmen des Vergleichs zwischen bedingter und unbedingter Kalibrierung zusammengeführt. Zentral ist hierbei, die Beziehung zwischen probabilistischer Kalibrierung und Quantilkalibrierung sowie zwischen Schwellenwertkalibrierung und marginaler Kalibrierung herauszuarbeiten. Schließlich wird die empirische Überprüfung von Kalibrierung thematisiert. Hierbei werden Reliabilitätsdiagramme sowie der CORP-Ansatz von \textcite{gneiting_regression_2023} vorgestellt, der unter der Annahme von Monotonie die Konstruktion von Reliabilitätsdiagrammen ohne Binning ermöglicht.
+
+Den zweiten großen theoretischen Abschnitt stellen die Scoring-Rules dar. Analog zur Kalibrierung sollen Scores auf Ebene von statistischen Funktionalen und ganzen Verteilungsfunktionen eingeführt werden.  Außerdem  werden zentrale Eigenschaften wie Properness und Konsistenz erläutert. Anschließend werden einige Scoring-Rules vorgestellt, wobei der Fokus auf dem Continuous Ranked Probability Score (CRPS) und seinen Darstellungsmöglichkeiten liegen soll. Ebenfalls wird die empirische Berechnung der Scoring-Rules thematisiert. Darauf aufbauend wird die Zerlegung von Scores und die damit verbundenen Vorteile behandelt. Dabei wird erneut Bezug auf den im Kalibrierungsabschnitt eingeführten CORP-Ansatz genommen. Im Mittelpunkt steht die empirische Zerlegung des Quantilscores sowie des CRPS, wobei eine CRPS-Zerlegung auf Basis des Quantilscores vorgestellt werden soll.
+
+Diese beschriebenen Methoden sollen dann auf die im Folgenden beschriebenen Wettervorhersagedaten angewandt werden. Zunächst gehen wir auf die grundlegenden Prinzipien von Wettervorhersagemodellen ein und beschreiben dann das für die Evaluation vorgesehene Datenmaterial genauer.
+
+\section{Numerische Wettervorhersagemodelle}
+Numerische Wettervorhersagemodelle modellieren deterministisch auf Basis einer Vielzahl an Differentialgleichungen den zukünftigen Zustand der Atmosphäre und der Erdoberfläche \parencite{DWD_NumerischeVorhersagemodelle}. Die Atmosphäre ist jedoch ein chaotisches System; schon minimale Ungenauigkeiten in den Anfangsbedingungen können über die Zeit zu sehr verschiedenen Ergebnissen führen. So können zwei Modelldurchläufe mit leicht unterschiedlichen Anfangswerten völlig verschiedene, aber dennoch plausible, Wetterszenarien produzieren \parencite{DWD_EnsembleVorhersage}. Um solche Unsicherheiten abzubilden, werden Ensemblevorhersagen genutzt. Dabei simuliert ein Modell die Atmosphäre auf der Grundlage von verschiedenen realistischen Anfangswerten oder leicht veränderten Modellparametern. Dadurch erhält man eine Reihe plausibler Vorhersagen, die Ensemblemitglieder. Aus ihnen lassen sich probabilistische Vorhersagen ableiten. 
+
+\section{Datengrundlage}
+\subsection{Modelldaten: ICON-d2-eps}
+Das ICON-d2-eps ist ein numerisches Wettervorhersagemodell des Deutschen Wetterdienstes (DWD) mit 20 Ensemblemitgliedern \parencite{reinert_dwd}. Es handelt es sich um ein Lokalmodell des Globalmodells ICON-eps für den Raum Deutschland, Schweiz, Österreich und Teile der anderen anliegenden Länder. Das modellierte Gebiet ist auf einem R19B07 Dreiecksgitter aus 542040 Gitterpunkten abgebildet mit mittlerer horizontalen Auflösung von 2,1 $km^2$ \parencite{reinert_dwd}. Beginnend bei 00-UTC wird alle drei Stunden eine neue stündliche 0- bis 48-Stunden-Vorhersage gerechnet. Abbildung \ref{fig:icon} zeigt das Modellgebiet.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\linewidth]{figs/icon_maps.pdf}
+\caption{Modellgebiet ICON-d2-eps. Dargestellt ist die +0-h (instant) 2-m-Temperatur Vorhersage des 10. Ensemblemitglieds vom 3.11.2025 6:00-UTC}
+\label{fig:icon}
+\end{figure}
+
+\subsection{Verifikationsdaten: HOSTRADA}
+HOSTRADA ist ein Akronym für hochaufgelösten stündlichen Rasterdatensatz \parencite{krahenmann_high-resolution_2018}. Es handelt sich um einen Referenzdatensatz für Deutschland, der seit 1995 stündlich meteorologische Parameter in der Lambert-Conformal-Conic-Projektion (LCC, EPSG:3034) mit einer horizontalen Auflösung von $1\cdot1\ \mathrm{km^2}$ bereitstellt. Die Daten ergeben sich aus der Interpolation von Stationsdaten unter Einbezug von Satelliten- und Modelldaten. 333404 Gitterpunkte sind mit Werten belegt. Das Modellgebiet ist in Abbildung \ref{fig:hostrada} dargestellt.
+
+\subsection{Verwendete Daten} \label{sec:useddata}
+Die oben beschriebene Datengrundlage ist sehr umfangreich. Im Rahmen der Abschlussarbeit möchte ich lediglich einen kleinen Ausschnitt dieser Daten verwenden. Hinsichtlich folgender Aspekte grenze ich die betrachteten Daten ein: Wetterkennwert, Vorhersagegebiet, Vorhersagedurchlauf, Zeitraum.
+
+Als zu prognostizierenden Wetterparameter beschränke ich mich auf die 2-m-Temperatur. Sie beschreibt Lufttemperatur in 2 Metern Höhe über dem Boden \parencite{dwd_2m_temperatur}. Das Vorhersagegebiet wird auf drei meteorologisch interessante Regionen eingegrenzt, wobei die Projektion der Hostrada Verifikationsdaten genutzt wird: Eine urbane Region, eine Küstenregion und eine Gebirgsregion. Als urbane Region wird Berlin gewählt, für die Küstenregion ein Bereich um Greifswald und als Gebirgsregion ein Gebiet um Garmisch-Partenkirchen. Die Gebiete sollen zwischen 1000 und 2000 Gitterzellen umfassen und sind dementsprechend zwischen 1000 und 2000 Quadratkilometer groß. Als Vorhersagedurchlauf verwende ich den 0:00 UTC Durchlauf des ICON-D2-eps und betrachte alle stündlichen Vorhersagen für einen Vorhersagehorizont von 0-48h.
+
+Zur Evaluation der Vorhersagen soll der November 2025 betrachtet werden. Neben Evaluationsdaten wende ich Postprocessing-Methoden an, um die rohen Ensemblevorhersagen nachzuberarbeiten. Dazu Bedarf es Trainingsdaten.  Als Trainingsdaten nutzte ich die 2-m-Temperaturdaten des Oktobers 2025. Damit verwende ich ein festes Trainingsfenster obwohl in der Literatur ein gleitendendes Trainingsfenster üblich ist \parencite{vannitsem_statistical_2021, climaguidelines}. Ich sehe davon ab, weil so nicht für jeden Tag eine neue Nachbearbeitung gerechnet werden muss. In diesem Zusammenhang treffe ich die implizite Annahme, dass die Fehlerstruktur zwischen Oktober und November ausreichend ähnlich für ein erfolgreiches Postprocessing ist. Im Folgenden Abschnitt wird genauer auf die Postprocessing-Methoden eingegangen.
+
+\section{Statistisches Postprocessing von Ensemblevorhersagen} \label{sec:postprocess}
+Ensemblevorhersagen weisen häufig systematische Fehler in Form von Bias und Dispersionsfehlern auf \parencite{vannitsem_statistical_2021}. Dispersionsfehler äußern sich in einer fehlerhaften Streuung der Ensemblemitglieder. So kommt es bei Ensemble-Wettervorhersagen häufig zur Unterdispersion, bei der die Ensemblestreuung den tatsächlichen Vorhersagefehler unterschätzt. Das Bias wiederum beschreibt eine systematische Abweichung der Ensemblevorhersagen vom beobachteten Wert. Aufgrund dieser Fehler ist es sinnvoll, Ensemblevorhersagen mithilfe statistischer Postprocessing-Methoden nachzubearbeiten \parencite{vannitsem_statistical_2021, gneiting_probabilistic_2014}.
+
+Üblicherweise wird das Postprocessing getrennt für verschiedene Vorhersagehorizonte durchgeführt \parencite{vannitsem_statistical_2021, climaguidelines}. Die Überlegung ist hierbei, dass sich Bias und Dispersionsfehler über die Länge der Vorhersage verändern. Wir können beispielsweise erwarten, dass der Bias für die 48h-Vorhersage größer ist als der für die 0h-instant-Vorhersage. Ebenso können je nach geographischer Lage Bias und Dispersionsfehler unterschiedlich ausfallen. Beispielsweise kann es in Gebirgen vs. Tälern zu wechselnden Fehlerstrukturen kommen \footnote{Auch zeitliche, saisonale Aspekte kann man berücksichtigen. Für die verwendeten Daten erscheint es jedoch wenig sinnvoll, weil nur ein Monat zum Postprocessing verwendet wird.}.
+
+Eine einfache Variante der Nachbearbeitung ist ein univariater Ansatz \parencite{vannitsem_statistical_2021, climaguidelines}. Dabei erhalten wir für jede Kombination aus Gitterzelle und Vorhersagehorizont eine separate Vorhersage. Das impliziert eine bedingte Unabhängigkeit über den Raum und Vorhersagehorizonte hinweg. Räumliche und zeitliche Abhängigkeiten bleiben somit nur durch die Ensemblesvorhersagen erhalten und werden im Postprocessing nicht explizit modelliert. Dies steht im Gegensatz zu Ansätzen, bei denen ein gemeinsames multivariates Modell über mehrere Orte oder Zeitpunkte spezifiziert wird.
+
+Empirisch haben wir nun folgendes Szenario: Für jede Gitterzelle an einer bestimmten Position $l \in L$ betrachten wir die beobachtete Temperatur bezogen auf einen bestimmten Vorhersagehorizont $h \in H$ (in unserem Fall $h=0,1,...,48$ Stunden) über $V$ Tage. Diese Tage trennen wir in einen Traingszeitraum von $T$ Tagen, in wir etwaige Parameter des Postprocessing Ansatzes bestimmen, und einen Evaluationszeitraum von $V-T$ Tagen. Für das Training stehen somit die Beobachtungen
+\[
+(y_{l,h}^{(1)}, x_{l,h,1}^{(1)},...,x_{l,h,M}^{(1)}), ..., (y_{l,h}^{(T)}, x_{l,h,1}^{(T)},...,x_{l,h,M}^{(T)}),
+\]
+zur Verfügung. Für die Evaluation die Daten
+\[
+(y_{l,h}^{(T+1)}, x_{l,h,1}^{(T+1)},...,x_{l,h,M}^{(T+1)}), ..., (y_{l,h}^{(V)}, x_{l,h,1}^{(V)},...,x_{l,h,M}^{(V)}).
+\]
+$y_{l,h}^{(i)}$ ist die beobachtete Temperatur an Gitterzelle $l$ zum Vorhersagehorizont $h$ an Tag $i$.  $x_{l,h,1}^{(i)},..,x_{l,h,M}^{(i)}$ sind die entsprechenden 1 bis M Ensemblevorhersagen.
+
+Angenommen wir betrachten die beobachteten Temperaturen vom 1.10.2025-31.10.2025. Weiter seien unsere Vorhersagen zum Initialzeitpunkt 0:00 UTC für den Vorhersagehorizont $28h$ für einen Ausschnitt Deutschlands gegeben. Dann wäre $y_{l,28}^{(5)}$ die beobachte Temperatur vom 5.10.2025 um 4:00 UTC und $x_{l,28,m}^{(5)}$ die entsprechende Ensemble Vorhersage des m-ten Ensembles, die am 4.10.2025 0:00 UTC erzeugt wurde. 
+
+Im Folgenden nehmen wir an, dass die beobachteten Tupel $(y_{l,h}^{(i)}, x_{l,h,1}^{(i)},...,x_{l,h,M}^{(i)})$ Realisierungen eines Zufallsvektors $(Y_{l,h},X_{l,h,1},…,X_{l,h,M})$ sind. Sei also $Y_{l,h}$ die 2-m Temperatur an Gitterzelle $l \in L$ zum Verifikationszeitpunkt des Vorhersagehorizonts $h \in H$. Weiter seien $X_{l,h,1},...,X_{l,h,M}$ die Ensemblevorhersagen an Position $l$ mit Vorhersagehorizont $h$. Im Postprocessing interessieren wir uns jetzt für die bedingte Verteilung
+\[
+\mathcal{L}(Y_{l,h} \mid X_{l,h,1}=x_{l,h,1},...,X_{l,h,M}=x_{l,h,M}),
+\]
+also die Verteilung der Temperatur gegeben der realisierten Ensemblewerte. Ziel der Postprocessing-Methoden ist es, diese Verteilung abzubilden. Die resultierende probabilistische Vorhersage bezeichnen wir mit
+\[
+F_{l,h}(X_{l,h,1}=x_{l,h,1},...,X_{l,h,M}=x_{l,h,M}).
+\]
+
+\paragraph{Empirische Ensembleverteilung.}
+Die einfachste Form der Nachbearbeitung besteht darin, auf sie vollständig zu verzichten. Dabei nehmen wir jedoch die zu Beginn des Abschnitts genannten Fehler in Kauf. Als Vorhersage verwenden wir bei diesem Ansatz die empirische Verteilung der Ensembles:
+\[
+{F_{l,h}}^{(emp)}(X_{l,h,1}=x_{l,h,1},...,X_{l,h,M}=x_{l,h,M})(y)= \frac{1}{M} \sum_{i=1}^{M} \mathds{1}\{x_{l,h,i} \leq y\}.
+\]
+
+\paragraph{Ensemble Model Output Statistics (EMOS).} EMOS ist eine verbreitete univariate \newline \noindent Postprocessing-Methode \parencite{gneiting_calibrated_2005,gebetsberger2018estimation}. Hierbei handelt es sich um eine Regression zur Schätzung von Parametern einer parametrischen Verteilungsfunktion. Im Fall von Temperaturvorhersagen können die Vorhersagen als Normalverteilung modelliert werden. In diesem Fall entspricht EMOS einer heteroskedastischen Gaußschen Regression. Der Erwartungswert wird durch die Ensemblevorhersagen als Prädiktoren modelliert, die Varianz durch die empirische Streuung der Ensemblemitglieder. Zwei Arten der Modellierung bieten sich an; ein EMOS-global, bei dem alle Gitterzellen eines Gebiets gemeinsam verarbeitet werden und ein EMOS-lokal, bei dem pro Gitterzelle eine eigene Regression geschätzt wird. Der Vorteil des globalen Ansatzes liegt in der größeren Menge an verfügbaren Beobachtungen und damit in einer robusteren Parameterschätzung. Allerdings werden räumliche Unterschiede in den Fehlerstrukturen dabei nicht berücksichtigt. Beim lokalen Ansatz verhält es sich umgekehrt: Hier können lokale räumliche Effekte erfasst werden, jedoch stehen pro Gitterzelle nur wenige Trainingsdaten zur Verfügung. Zudem müssen eine große Anzahl separater Regressionen geschätzt werden, was den Rechenaufwand erhöht. Im folgenden werden die beiden EMOS Varianten vorgestellt.
+
+\paragraph{EMOS-lokal.}
+Sei $S_{l,h}$ die empirische Standardabweichung der Ensemblemitglieder an Position $l$. Dann nimmt das EMOS-lokale Modell an:
+\begin{equation}\label{eq:EMOS-local}
+\begin{split}
+Y_{l,h} \mid x_{l,h,1}, ..., x_{l,h,M} &\sim \mathcal{N}(\mu_{l,h}, \sigma_{l,h}^2),\\
+\mu_{l,h} &= b_{l,h,0} + b_{l,h,1} \cdot x_{l,h,1} + ... + b_{l,h,M}\cdot x_{l,h,M},\\
+\log(\sigma_{l,h}) &= c_{l,h} + d_{l,h} \cdot \log(S_{l,h}).
+\end{split}
+\end{equation}
+Beim EMOS-lokal werden die Parameter $b_{l,h,0},...,b_{l,h,M}, c_{l,h}, d_{l,h}$ also lokal für jede Gitterzelle $l$ und jeden Vorhersagehorizont $h$ geschätzt. Für die resultierende probabilistische Vorhersage verwenden wir das aus der Regression geschätzte Modell direkt:
+\[
+F_{l,h}^{(emos\text{-}lokal)}(X_{l,h,1}=x_{l,h,1},...,X_{l,h,M}=x_{l,h,M}) = \mathcal{N}(\hat{\mu}_{l,h}, \hat{\sigma}_{l,h}^2).
+\]
+
+\paragraph{EMOS-global.}
+Beim EMOS-global schätzen wir die Parameter nicht pro Gitterzelle, sondern über das gesamte Gebiet, das wir betrachten:
+\begin{equation}\label{eq:EMOS-global}
+\begin{split}
+Y_{l,h} \mid x_{l,h,1}, ..., x_{l,h,M} &\sim \mathcal{N}(\mu_h, \sigma_h^2), \quad l \in L,\\
+\mu_h &= b_{h,0} + b_{h,1} \cdot x_{l,h,1} + ... + b_{h,M}\cdot x_{l,h,M},\\
+\log(\sigma_h) &= c_h + d_h \cdot \log(S_{l,h}).
+\end{split}
+\end{equation}
+Analog zum EMOS-lokal lautet die resultierende Vorhersage:
+\[
+F_{l,h}^{(emos\text{-}global)}(X_{l,h,1}=x_{l,h,1},...,X_{l,h,M}=x_{l,h,M}) = \mathcal{N}(\hat{\mu}_h, \hat{\sigma}_h^2).
+\]
+Gängige Methoden, um die Parameter des Modells zu schätzen, sind entweder die Maximum-
+Likelihood-Methode oder eine Optimierung des CRPS \parencite{gneiting_calibrated_2005,gebetsberger2018estimation}. Viele Änderungen und Anpassungen innerhalb dieses Ansatzes sind denkbar. So wird häufig der Erwartungswert lediglich durch den Ensemble Mittelwert geschätzt anstatt durch jedes Mitglied. Außerdem kann man die modellierte Verteilung ändern. Für die Temperatur böte sich etwa alternativ eine T-Verteilung oder eine Logistische Verteilung an \parencite{gebetsberger2018estimation}. Ebenfalls könnte man nichtlineare Effekte ins Modell integrieren. Vorläufig sollen aber die in diesem Abschnitt beschriebenen Methoden zum Postprocessing verwendet werden. 
+
+Wie in Abschnitt \ref{sec:useddata} erwähnt, wird zum Training nur der Oktober 2025 verwendet, sodass für das EMOS-lokal-Modell nur 30 Punkte pro Regression zur Verfügung stünden. Um die Anzahl der Beobachtungen etwas zu vergrößern, werden für jeden Vorhersagehorizont $h$ zusätzlich die Bereiche $h-2,h-1,h,h+1,h+2$ mit einbezogen. Dies erscheint gerechtfertigt, weil sich die Fehlerstruktur innerhalb dieser kurzen Zeitverschiebung nicht wesentlich unterscheiden sollte.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.7\linewidth]{figs/hostrada_map.pdf}
+\caption{Modellgebiet Hostrada. Dargestellt ist die 2-m-Temperatur vom 3.11.2025 6:00-UTC}
+\label{fig:hostrada}
+\end{figure}
+
+\section{Vorgehensweise}
+Das Vorgehen zur Evaluation der Wettervorhersagen lässt sich in drei Schritte gliedern: Anpassung der Gitterprojektion, statistisches Postprocessing sowie Evaluation hinsichtlich Kalibrierung und Scoring Rules.
+
+Das Gitter des ICON-d2-eps ist ein Dreiecksgitter in geografischen Koordinaten. Der Hostrada-Datensatz hingegen wird auf einem regulären, projizierten Gitter bereitgestellt und ist zudem feiner aufgelöst. Für einen Vergleich zwischen Modellvorhersagen und Beobachtungsdaten ist daher zunächst eine Übertragung der ICON-d2-eps Daten auf das Koordinatensystem von Hostrada erforderlich. Abbildung \ref{fig:comparision} verdeutlicht die Projektions und Auflösungsunterschiede beider Datensätze. Hierfür muss eine geeignete Reprojektions- und Interpolationsmethode angewendet werden, wobei hierbei eine Handreichung des Deutschen Wetterdienstes als Orientierung dient \textcite{umwandlung}. 
+
+Nach der Angleichung der Datensätze erfolgt das statistische Postprocessing der Ensemblevorhersagen des ICON-D2-esp auf Basis der Temperaturdaten vom Oktober 2025. Dabei werden die in Abschnitt \ref{sec:postprocess} vorgestellten Modelle geschätzt.
+
+Im Anschluss werden die Vorhersagen des rohen Ensembles sowie der Modelle EMOS-global und EMOS-lokal für die unterschiedlichen Gebiete evaluiert. Grundlage hierfür bilden die im theoretischen Teil der Arbeit eingeführten Konzepte (vgl. Abschnitt \ref{sec:eval}). Somit erfolgt die Bewertung der resultierenden Vorhersageverteilungen mittels Kalibrierungsdiagrammen und Scoring Rules. Im Hinblick auf die Kalibrierung werden die probabilistische, marginale und Quantilkalibrierung anhand von Reliabilitätsdiagrammen untersucht. Die in Abschnitt \ref{sec:useddata} definierten Gebiete werden dabei getrennt analysiert. Zudem erfolgt eine Betrachtung der Vorhersagehorizonte sowohl einzeln als auch gemeinsam. Für die Bewertung mittels Scoring Rules werden der Quantil-Score sowie der CRPS herangezogen. Quantil-Score und CRPS werden in die Komponenten Misskalibrierung, Unsicherheit und Diskriminierung zerlegt, wodurch zusätzlich die Berechnung eines Skill Scores ermöglicht wird. Ziel ist eine abschließende Bewertung, welches Modell in den jeweiligen Gebieten die beste Vorhersagegüte aufweist.
+
+
+
+
+\section{Vorläufige Gliederung}
+\begin{enumerate}
+\item Evaluation probabilistischer Vorhersagen
+\begin{enumerate}
+    \item Kalibrierung und Schärfe
+    \item Kalibrierungskonzepte
+    \begin{enumerate}
+        \item Klassische Konzepte: Autokalibrierung, probabilistische und marginale Kalibrierung
+        \item Kalibrierung hinsichtlich statistischer Funktionale: Quantil- und Schwellenwertkalibrierung
+        \item Verbindungen zwischen bedingter und unbedingter Kalibrierung
+    \end{enumerate}
+    \item Empirische Überprüfung von Kalibrierung: Der CORP-Ansatz
+    \item Scoring Rules
+    \begin{enumerate}
+        \item Definition und Eigenschaften
+        \item Continuous Ranked Probability Score (CRPS)
+        \item Score-Zerlegung
+    \end{enumerate}
+    \item Empirische Zerlegung des CRPS und des Quantilscores mithilfe des CORP-Ansatzes
+\end{enumerate}
+
+\item Numerische Wettervorhersagemodelle
+\begin{enumerate}
+    \item Grundlagen
+    \item Globale und lokale Modelle
+    \item Ensemblevorhersagen
+\end{enumerate}
+
+\item Datengrundlage
+\begin{enumerate}
+    \item Modelldaten: ICON-D2-eps
+    \item Verifikationsdaten: HOSTRADA
+    \item Verwendete Daten
+\end{enumerate}
+
+\item Statistisches Postprocessing von Ensemblevorhersagen
+
+\item Vorgehensweise und Durchführung
+\begin{enumerate}
+    \item Anpassung der Gitterprojektion mittels CDO
+    \item Umsetzung des Postprocessings
+    \item Umsetzung der Kalibrierungsprüfung
+    \item Umsetzung der Score-Zerlegung
+\end{enumerate}
+
+\item Ergebnisse
+\begin{enumerate}
+    \item Kalibrierung
+    \item Scores
+    \item Gesamtbeurteilung der Modelle
+\end{enumerate}
+
+\item Diskussion
+
+\item Fazit
+\end{enumerate}{}
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\linewidth]{figs/temperature_maps.png}
+\caption{ICON-d2-esp Dreiecksgitter (a) im Vergleich zum Hostrada Raster (b) auf den Bereich Berlin eingegrenzt. Abgebildet ist die +24-h Vorhersage der 2-m-Temperatur des ersten Ensemblemitglieds vom 2.10.2025 0:00-UTC (a) und entsprechend die Temperatur vom 3.10.2025 0:00-UTC (b).}
+\label{fig:comparision}
+\end{figure}
+
+
+
+\printbibliography[title={Literatur}]
+\end{document}
+
+%Üblich sind hierbei etwa 30 Tage. Innerhalb dieses Rahmens bestefsuhen zusätzlich verschiedene Modellierungsansätze, um eine Vorhersage zu erhalten. Bevor wir uns den verschieden Postprocessing-Methoden widmen, soll zunächst grundlegende Notationen festhalten werden. Wir bezeichnen $l$ als die Position einer bestimmten Gitterzelle, $t_0$ als den Initialzeitpunkt einer Ensemblevorhersage, $h$ deren Vorhersagehorizont und $t = t_0+h$ den Verifikationszeitpunkt. Dann ist $x_{l,t_{0},h,i}$ die Ensemblevorhersage des $i$-ten Ensembles $(i=1,...,M)$ der Gitterzelle $l$ zum Startpunkt $t_{0}$ mit Vorhersagehorizont $h$. Weiter sei $Y_{l,t}$ die Zufallsvariable der Temperatur an Gitterzelle $l$ zum Zeitpunkt $t$. Schließlich sei $F_{l,t_0,h}$ die aus dem Postprocessing resultierende vorhergesagte Verteilungsfunktion.
+
+%Im Gegensatz zum ICON-Modell liegen die Daten in der Lambert Conformal Conic Projektion vor (LCC, EPSG:3034). Dabei handelt es sich um ein projeziertes Koordinatensystem, welches Verzerrungen über Europa minimiert \parencite{wikipedia_lcc}. Zur Projektion wird die Erdoberfläche zunächst auf einen Kegel abgebildet und anschließend in ein kartesisches Koordinatensystem überführt. Die Gitterzellen haben dabei feste metrische Abstände. Das ermöglicht eine einfachere und direktere Interpretation von Flächen und Entfernungen.
+
+
+%\begin{equation}
+%S^2_{l,t_0,h}=\frac{1}{M-1}\sum_{i=1}^M\left(X_{l,t_0,h,i}-\bar{X}_{l,t_0,h}\right)^2 .
+%\end{equation}
+%Sei $S{l,t_0,h}$ die empirische Standardabweichung der Ensemblemitglieder. Dann nimmt das EMOS-Modell an, dass: \footnote{Für die Modellierung der Varianz wählt man den $\log$, um sicherzustellen, dass sie positiv wird.}:
+%\begin{equation}\label{eq:EMOS}
+   % \begin{split}
+    %    Y_{l,t} \mid x_{l,t_0,h,1}, ... ,&x_{l,t_0,h,M}  \sim \mathcal{N}(\mu_{l,h}, {\sigma^2}_{l,h}) \; \text{mit}  \\
+     %         \mu_{l,h} = b_{l,h,0}& + b_{l,h,1} \cdot x_{l,t_{0},h,1} + ... + b_{l,h,M}\cdot x_{l,t_{0},h,M},\\
+      %        %{\sigma^2}_{l,h} &= c_{l,h}+d_{l,h}\cdot {S^2}_{l,t_{0},h}, \\
+       %       \log{(\sigma_{l,h})} &= c_{l,h}+d_{l,h}\cdot \log(S_{l,t_{0},h})
+    %\end{split}
+%\end{equation}
+%\begin{equation}
+%S^2_{l,t_0,h}=\frac{1}{M-1}\sum_{i=1}^M\left(X_{l,t_0,h,i}-\bar{X}_{l,t_0,h}\right)^2 .
+%\end{equation}
+
+
+
+%\section{Gegenstand der Abschlussarbeit}
+%In meiner Arbeit möchte ich aus dem ICON-d2-esp abgeleitete 2-m-Temperatur Vorhersageverteilungen evaluieren, indem ich unterschiedliche Modelle des Postprocessings miteinander vergleiche. Als Baseline soll eine Vorhersageverteilung dienen, die ohne Postprocessing direkt auf der Ensemblevorhersage basiert. Der erste Postprocessing Ansatz wird das EMOS Modell, wie in \ref{eq:EMOS} beschrieben, sein. Der zweite Ansatz steht noch nicht fest. \footnote{In der eigentlichen Arbeit will ich zuerst Verallgemeinerte additive Modelle für Lage-, Skalen- und Formparameter (GAMMLS) vorstellen und EMOS als einen Spezialfall davon interpretieren und ein auf GAMMLS basierendes Modell als zweites Modell nehmen. Zum aktuellen Zeitpunkt habe ich mich aber noch nicht in das Thema eingelesen.} Die Verifikation der Daten geschieht über den Hostrada Datensatz. Deshalb werden die Vorhersagen auch nur für Deutschland evaluiert.Als Trainigszeitraum für das Postprocessing werde ich den Oktober 2025 nutzen und den November 2025 als Evaluationszeitraum. Betrachtet werden alle täglichen 0- bis 48-Stunden-Vorhersagen startend bei 0:00-UTC.
+
+
+
+%Viele Arbeiten hören bei:
+%„EMOS hat kleineren CRPS.“
+%Du würdest zeigen:
+%„EMOS verbessert primär die Kalibrierung, verliert aber leicht an Schärfe, besonders im Gebirge.“
+%Das ist wissenschaftlich viel wertvoller.
+
+

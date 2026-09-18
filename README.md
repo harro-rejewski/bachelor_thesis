@@ -2,7 +2,7 @@
 
 Dieses Repository enthält die Analyseskripte für meine Bachelorarbeit im Fach **Mathematik mit Informatik** an der **Universität Greifswald** mit dem Titel:
 
-> **Evaluation und Vergleich probabilistischer Temperaturvorhersagen**
+> **Statistische Evaluation und Vergleich probabilistischer Temperaturvorhersagen**
 
 ## Anwendung
 
@@ -54,8 +54,12 @@ http://localhost:8787/
 
 ## Sonstige Inhalte des Repositories
 
-###  `Tex` (coming soon)
-Latex Scripte zum Erstellen der Arbeit
+Finale PDF Version der Arbeit.
+
+###  `Tex`
+Latex Scripte zum Erstellen der Arbeit. 
+(Zur Repoduktion der Inhalte des Ergebnisteils die Dateien aus dem Ordner `R/plots` in den Ordner
+`Tex/figs` kopieren.)
 
 ### `CDO`
 
@@ -67,4 +71,8 @@ Der Ordner `Pamore Manger` enthält Python-Skripte, mit denen sich **ICON-D2-EPS
 
 ## Nicht enthaltene Daten
 
-Die **ICON-D2-Modellvorhersagen** sowie die **HOSTRADA-Daten** sind aus Gründen der Dateigröße nicht Bestandteil dieses Repositories.
+Die **ICON-D2-Modellvorhersagen** sowie die **HOSTRADA-Daten** sind aus Gründen der Dateigröße nicht Bestandteil dieses Repositories. Die Daten sind über
+```link
+https://nextcloud.uni-greifswald.de/index.php/s/9fe4QgKxHQxcB9b
+```
+einsehbar. 

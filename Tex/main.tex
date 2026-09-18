@@ -1,0 +1,193 @@
+\documentclass[11pt,openany]{book}
+\usepackage[utf8]{inputenc}
+
+\makeatletter 
+\setlength{\@fptop}{30pt} 
+\makeatother
+
+\usepackage[
+  style=apa,
+  backend=biber,
+  doi=true,
+  url=true
+]{biblatex}
+
+
+\addbibresource{A.bib}
+
+\usepackage{tocloft}
+
+\setlength{\cftbeforesecskip}{0pt}
+\setlength{\cftbeforesubsecskip}{0pt}
+\setlength{\cftbeforesubsubsecskip}{0pt}
+
+\usepackage[ngerman]{babel}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{DarkMagenta}{RGB}{150,0,150}
+\usepackage[colorlinks=true,linkcolor=DarkMagenta, citecolor=DarkMagenta, urlcolor=DarkMagenta]{hyperref}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{booktabs} % Für professionelle Tabellengrenzen
+\usepackage{array}
+\usepackage{dsfont}
+\usepackage{bm} 
+\usepackage{tikz}
+\usepackage{booktabs}   % Für kableExtra und stargazer (schöne Linien)
+\usepackage{longtable}  % Falls die Tabelle über eine Seite geht
+\usepackage{placeins}
+\usepackage{array}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{microtype}
+%\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{todonotes}
+\usepackage{csquotes}
+
+\usepackage{mathtools}
+\usepackage{amsmath, amssymb, amsthm,thmtools}
+\theoremstyle{plain}
+\newtheorem{defi}{Definition}           % Globaler Zähler, kein section
+\newtheorem{lem}[defi]{Lemma}           % Gleicher Zähler wie defi
+\newtheorem{bsp}[defi]{Beispiel}        % Gleicher Zähler wie defi
+\newtheorem{theo}[defi]{Theorem}   
+\theoremstyle{remark}                    % Gleicher Zähler wie defi
+\newtheorem{bem}[defi]{Bemerkung}       % Gleicher Zähler wie defi
+\newtheorem{vor}[defi]{Voraussetzung}   % Gleicher Zähler wie defi
+\theoremstyle{definition}
+\newtheorem{alg}[defi]{Algorithmus}
+%\newtheorem{defi}{Definition}[section]
+%\newtheorem{lem}{Lemma}[section]
+%\newtheorem{bsp}{Beispiel}[section]
+%\newtheorem{theo}{Theorem}[section]
+%\newtheorem{bem}{Bemerkung}[section]
+%\newtheorem{vor}{Vorraussetzung}[section]
+% Formatierung der Nummerierung: Abschnitt.Punktnummer
+\renewcommand{\thedefi}{\arabic{chapter}.\arabic{defi}}
+\renewcommand{\thelem}{\arabic{chapter}.\arabic{lem}}
+\renewcommand{\thebsp}{\arabic{chapter}.\arabic{bsp}}
+\renewcommand{\thetheo}{\arabic{chapter}.\arabic{theo}}
+\renewcommand{\thebem}{\arabic{chapter}.\arabic{bem}}
+\renewcommand{\thevor}{\arabic{chapter}.\arabic{vor}}
+\renewcommand{\thealg}{\arabic{chapter}.\arabic{alg}}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+
+\numberwithin{defi}{chapter}
+\numberwithin{lem}{chapter}
+\numberwithin{bsp}{chapter}
+\numberwithin{theo}{chapter}
+\numberwithin{bem}{chapter}
+\numberwithin{vor}{chapter}
+\numberwithin{alg}{chapter}
+
+
+\usepackage{titlesec}
+%\renewcommand{\part}[1]{%
+%  \chapter*{#1}
+%  \addcontentsline{toc}{part}{#1}
+%}
+
+% Swap the definition of \abs* and \norm*, so that \abs
+% and \norm resizes the size of the brackets, and the 
+% starred version does not.
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+%
+\let\oldnorm\norm
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+
+
+\newcommand{\R}{\mathbb{R}} % Reelle Zahlen
+\newcommand{\WR}{(\Omega, \mathcal{A}, \mathbb{P})}
+\newcommand{\BO}{\mathcal{B}(\R)} 
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\LW}{\mathcal{L}}
+\newcommand{\PW}{\mathbb{P}} 
+\newcommand{\E}{\mathbb{E}} 
+\newcommand{\Var}{\mathrm{Var}} 
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\ZF}{Z_F}
+\newcommand{\qF}{q_\alpha(F)}
+\newcommand{\1}{\mathds{1}}
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\QS}{\mathrm{QS}}
+\newcommand{\CRPS}{\mathrm{CRPS}}
+\newcommand{\rc}{\mathrm{rc}}
+\newcommand{\mg}{\mathrm{mg}}
+\newcommand{\MCB}{\mathrm{MCB}}
+\newcommand{\DSC}{\mathrm{DSC}}
+\newcommand{\UNC}{\mathrm{UNC}}
+\newcommand{\TCRPS}{Continous\- Ranked\- Probability\- Score}
+\newcommand{\h}{\,\mathrm{h}}
+\newcommand{\C}{\,^\circ\mathrm{C}}
+
+
+
+\usepackage{caption}
+
+\captionsetup[table]{
+    position=top,
+    justification=raggedright,
+    singlelinecheck=false
+}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  breakatwhitespace=true,
+  columns=fullflexible,
+  xleftmargin=2em,
+  xrightmargin=2em
+}
+
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{verbatim}
+
+
+%\usepackage{fontspec}
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=30mm,
+ right=30mm,
+ top=25mm,
+ }
+ 
+ \begin{document}
+ %\iffalse
+ \input{titlepage}
+ %\fi
+ 
+ \newpage
+ 
+ \tableofcontents
+ %\iffalse
+ \input{intro.tex}
+ %\fi
+ 
+ %\iffalse
+ \input{calibration.tex}
+ %\fi
+
+ %\iffalse
+ \input{scoring.tex}
+ %\fi
+
+\input{second_part.tex}
+\appendix
+
+\input{appendix.tex}
+
+\FloatBarrier
+\printbibliography
+
+ \end{document}{}

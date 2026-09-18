@@ -1,0 +1,60 @@
+\begin{table}[!h]
+\caption{Zerlegung der Scores sowie Skill.}
+\centering
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\begin{tabularx}{0.95\textwidth}{L L L R R R R R}
+\toprule
+Horizont & Score & Vorhersage & Score & MCB & DSC & UNC & Skill\\
+\midrule
+\multirow[t]{18}{*}{24\,h} & \multirow[t]{3}{*}{CRPS} & empirisch & 0.64 & 0.20 & 1.89 & 2.33 & 0.73\\
+&& global & 0.63 & 0.17 & 1.87 & 2.33 & 0.73\\
+&& lokal & 0.62 & 0.16 & 1.87 & 2.33 & 0.73\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.05}$} & empirisch & 0.36 & 0.16 & 0.67 & 0.86 & 0.59\\
+&& global & 0.26 & 0.07 & 0.67 & 0.86 & 0.70\\
+&& lokal & 0.25 & 0.07 & 0.68 & 0.86 & 0.71\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.25}$} & empirisch & 0.73 & 0.19 & 2.32 & 2.86 & 0.74\\
+&& global & 0.71 & 0.16 & 2.31 & 2.86 & 0.75\\
+&& lokal & 0.69 & 0.16 & 2.32 & 2.86 & 0.76\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.50}$} & empirisch & 0.84 & 0.21 & 2.59 & 3.22 & 0.74\\
+&& global & 0.89 & 0.23 & 2.56 & 3.22 & 0.72\\
+&& lokal & 0.86 & 0.22 & 2.57 & 3.22 & 0.73\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.75}$} & empirisch & 0.67 & 0.22 & 2.02 & 2.47 & 0.73\\
+&& global & 0.70 & 0.21 & 1.98 & 2.47 & 0.72\\
+&& lokal & 0.70 & 0.21 & 1.97 & 2.47 & 0.71\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.95}$} & empirisch & 0.27 & 0.14 & 0.66 & 0.79 & 0.66\\
+&& global & 0.22 & 0.08 & 0.65 & 0.79 & 0.72\\
+&& lokal & 0.26 & 0.10 & 0.64 & 0.79 & 0.68\\
+\midrule
+\multirow[t]{18}{*}{48\,h} & \multirow[t]{3}{*}{CRPS} & empirisch & 0.81 & 0.24 & 1.76 & 2.33 & 0.65\\
+&& global & 0.90 & 0.34 & 1.77 & 2.33 & 0.61\\
+&& lokal & 0.91 & 0.33 & 1.76 & 2.33 & 0.61\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.05}$} & empirisch & 0.43 & 0.16 & 0.59 & 0.86 & 0.50\\
+&& global & 0.37 & 0.11 & 0.60 & 0.86 & 0.57\\
+&& lokal & 0.36 & 0.10 & 0.60 & 0.86 & 0.58\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.25}$} & empirisch & 1.00 & 0.23 & 2.09 & 2.86 & 0.65\\
+&& global & 1.01 & 0.28 & 2.13 & 2.86 & 0.65\\
+&& lokal & 0.99 & 0.25 & 2.11 & 2.86 & 0.65\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.50}$} & empirisch & 1.10 & 0.28 & 2.40 & 3.22 & 0.66\\
+&& global & 1.23 & 0.45 & 2.43 & 3.22 & 0.61\\
+&& lokal & 1.24 & 0.44 & 2.42 & 3.22 & 0.61\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.75}$} & empirisch & 0.82 & 0.30 & 1.96 & 2.47 & 0.67\\
+&& global & 1.02 & 0.50 & 1.94 & 2.47 & 0.58\\
+&& lokal & 1.05 & 0.50 & 1.92 & 2.47 & 0.57\\
+\addlinespace[0.4em]
+& \multirow[t]{3}{*}{$2\QS_{0.95}$} & empirisch & 0.26 & 0.12 & 0.65 & 0.79 & 0.67\\
+&& global & 0.37 & 0.21 & 0.64 & 0.79 & 0.54\\
+&& lokal & 0.42 & 0.25 & 0.62 & 0.79 & 0.47\\
+\bottomrule
+\end{tabularx}
+\label{tab:decomp}
+\end{table}

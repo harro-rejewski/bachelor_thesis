@@ -1,0 +1,23 @@
+\begin{table}[!h]
+\caption{CRPS der Vorhersagen.}
+\centering
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\begin{tabularx}{0.9\textwidth}{L L R R R R}
+\toprule
+Horizont & Methode & CRPS & Min & Max & $q_{25}$--$q_{75}$\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{6}{l}{24 h\,h}\\
+& empirisch & 0.64 & 0.05 & 5.53 & 0.23--0.90\\
+& global & 0.63 & 0.16 & 5.09 & 0.28--0.83\\
+& lokal & 0.62 & 0.09 & 3.80 & 0.26--0.83\\
+\addlinespace[0.3em]
+\multicolumn{6}{l}{48 h\,h}\\
+& empirisch & 0.81 & 0.05 & 5.61 & 0.30--1.13\\
+& global & 0.90 & 0.16 & 5.05 & 0.37--1.30\\
+& lokal & 0.91 & 0.09 & 4.90 & 0.37--1.32\\
+\bottomrule
+\end{tabularx}
+\label{tab:crps}
+\end{table}

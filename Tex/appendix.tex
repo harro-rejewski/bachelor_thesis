@@ -1,0 +1,359 @@
+\chapter{Stochastische Erläuterungen} \label{seq:stoch_explain}
+Zur besseren Einordnung der verwendeten Notation und Begriffe im theoretischen Teil erläutern wir hier einige Konzepte genauer.
+Die Grundlage der nachfolgenden Ausführungen bildet das Buch von \textcite{klenke2020wahrscheinlichkeitstheorie}. 
+
+Eine Vorhersage $F$ haben wir hier als zufällige Verteilung aufgefasst, genauer als Markovkern. Dieser soll hier formal beschrieben werden. Dabei bezieht sich die Definition auf die im Theorieteil eingeführte Notation sowie die dort relevanten Mengen. 
+
+\begin{defi}[Markovkern von $(\Omega, \mathcal{A}_0)$ nach $(\R, \BO)$]
+    Sei $(\Omega,\mathcal{A}_0)$ ein Messraum. Eine Abbildung
+    \[
+    F:\Omega\times\BO\to[0,1]
+    \]
+    heißt \emph{Markovkern} von $(\Omega,\mathcal{A}_0)$ nach $(\R,\BO)$, falls
+    \begin{itemize}
+        \item für jedes $B\in \BO$ die Abbildung  \[\omega\mapsto F(\omega,B)\] $\mathcal{A}_0$-messbar ist.
+
+    \item für jedes $\omega\in\Omega$ die Abbildung
+    \[
+    B\mapsto F(\omega,B)
+    \]
+    ein Wahrscheinlichkeitsmaß auf $(\R,\BO))$ ist.
+\end{itemize}
+\end{defi}
+Somit liefert $F(\omega,\cdot)$ für jedes $\omega$ eine Wahrscheinlichkeitsverteilung auf $\R$, während die Abhängigkeit von $\omega$ messbar bleibt. Damit beschreibt ein Markovkern eine zufällige Wahrscheinlichkeitsverteilung, die wir als probabilistische Vorhersage betrachten können.
+
+Bei einigen der Kalibrierungsdefinitionen steht der Begriff \glqq fast sicher\grqq{} hinter Gleichheiten von Zufallsvariablen. Die Verwendung soll genauer erläutert werden. Beim Vergleich von Zufallsvariablen ist nicht die punktweise Gleichheit für jedes $\omega\in\Omega$ entscheidend, sondern ob sie sich auf einer Nullmenge unterscheiden. Der Grund hierfür ist, dass Änderungen auf Nullmengen keinen Einfluss auf Wahrscheinlichkeiten, Integrale oder Erwartungswerte haben.
+Für zwei Zufallsvariablen $X$ und $Y$ betrachten wir daher die Unterschiedsmenge
+\[
+N=\{X\neq Y\}=\{\omega \in \Omega: X(\omega)\neq Y(\omega)\}.
+\]
+Handelt es sich dabei um eine Nullmenge d.h. $\PW(N)=0$, so nennen wir $X$ und $Y$ fast sicher gleich, also
+\[
+X = Y \quad \text{fast sicher}.
+\]
+
+\begin{bsp}[Nicht überall gleiche, aber fast sicher gleiche Zufallsvariablen]
+    Sei $\WR = \left((0,1),\mathcal{B}((0,1)),\lambda \right)$ ein Wahrscheinlichkeitsraum, wobei $\lambda$ das Lebeque-Maß ist. Seien $X$ und $Y$ zwei Zufallsvariablen mit 
+    \[
+    X(\omega)=\omega
+    \]
+    und
+    \[
+    Y(\omega) = \begin{cases} 
+            2,                     & \text{falls } \omega \in \mathbb{Q} \cap (0,1) \\
+            \omega,                & \text{falls } \omega \notin  \mathbb{Q}.
+        \end{cases}
+    \]
+    Das heißt $X$ und $Y$ unterscheiden sich nur auf rationalen Zahlen im Intervall $(0,1)$. Für ein $q \in \mathbb{Q} \cap (0,1)$  gilt $\PW(\{q\})=\lambda(\{q\})=0$, weil jede einelementige Menge eine Nullmenge bzgl. $\lambda$ ist. Damit handelt es sich bei der Unterschiedsmenge um eine abzählbare Vereinigung von Nullmengen und somit wieder um ein Nullmenge. Also gilt $\PW(\mathbb{Q} \cap (0,1))=0$ und somit auch $X=Y$ fast sicher.
+    Obwohl sich die beiden Zufallsvariablen punktweise (sogar auf unendlich vielen Punkten) unterscheiden, haben sie daher auch insb. dieselbe Verteilung. Wegen $X \sim \mathcal{U}(0,1)$, gilt auch $Y \sim \mathcal{U}(0,1)$.
+\end{bsp}
+
+
+
+
+\chapter{Vorliegende Daten als Vorhersageraum}
+Für die Evaluation wurden alle Temperatur Vorhersage-Beobachtungspaare gemeinsam betrachtet. Um theoretische Kohärenz zum Vorhersageraum (Definition \ref{def::room}) herzustellen, soll im Folgenden für die vorliegenden Daten eine Möglichkeit skizziert werden, welche Gestalt ein Vorhersageraum annehmen könnte.
+
+Die vorliegenden Größen interpretieren wir als Zufallsvariablen. Dazu seien die Beobachtungen $y^{(t)}_l$ Realisierungen einer Zufallsvariable $Y$. Die Ensemblevorhersagen $x_{l,h,m}^{(t)}$ fassen wir als Realisation der Zufallsvariable $X_{24\h,m}$ bzw. $X_{48\h,m}$ auf. Den räumlichen und zeitlichen Kontext beschreiben wir ebenfalls als Zufallsvariablen $\mathfrak{L},\mathfrak{T}$, die die Gitterzelle bzw. den Verifikationstag beschreiben. Obwohl diese Kontextvariablen deterministisch vorgegeben sind, behandeln wir sie als Zufallsvariablen, damit wir die Informationen, die die Vorhersagen nutzen beschreiben können. Somit wählen wir den zugrundeliegenden Wahrscheinlichkeitsraum so, dass eine Elementarereignis eine vollständige Vorhersagesituation beschreibt.
+
+Das Wahrscheinlichkeitsmaß $\PW$ beschreibt die gemeinsame Verteilung aller im Vorhersageraum definierten Zufallsgrößen und damit insbesondere die der Ensemblevorhersagen, der Temperaturbeobachtung sowie der Kontextvariablen. Eine explizite Modellierung brauchen wir nicht, weil $\PW$ lediglich als theoretische Grundlage für die Definition der gemeinsamen Verteilung der Vorhersagen und Beobachtungen fungiert.
+
+Der zugrundeliegende Ereignissraum lässt sich wie folgt darstellen
+\[
+\Omega=\R \times \R^{20} \times \R^{20} \times L \times T,
+\]
+wobei ein Elementarereignis eine mögliche Vorhersagesituation darstellt und aus der beobachteten Temperatur, den Ensemblevorhersagen sowie dem räumlichen und zeitlichen Kontext der Vorhersage besteht
+\[
+\omega = \left(Y,X_{24\h,1},\dotsc,X_{24\h,20}, X_{48\h,1},\dotsc,X_{48\h,20}, \mathfrak{L},\mathfrak{T} \right).
+\]
+Die zugrunde liegende Information können wir beschreiben mit
+\[
+\mathcal{A}_0= \sigma\!\left( X_{24\h,1},\dotsc,X_{24\h,20}, X_{48\h,1},\dotsc,X_{48\h,20}, \mathfrak{L},\mathfrak{T} \right).
+\]
+
+Als nächstes beschreiben wir die Vorhersagen, zuzüglich der von ihnen verwendeten Informationsmenge (erzeugten $\sigma$-Algebren). Die empirische Vorhersage hängt ausschließlich von den Ensemblemitgliedern ab und verwendet den räumlich-zeitlichen Kontext nicht explizit. Wir erhalten
+\begin{align*}
+    F^{\mathrm{emp}}_{24\h}(y)&= \frac{1}{20}\sum_{m=1}^{20} \mathds{1}\!\left\{X_{24\h,m}\le y\right\}, \\
+&\sigma\!\left( F^{\mathrm{emp}}_{24\h} \right)= \sigma\!\left( X_{24\h,1},\dotsc,X_{24\h,20} \right),\\
+    F^{\mathrm{emp}}_{48\h}(y)&= \frac{1}{20}\sum_{m=1}^{20} \mathds{1}\!\left\{X_{48\h,m}\le y\right\},\\
+&\sigma\!\left( F^{\mathrm{emp}}_{48\h} \right) = \sigma\!\left( X_{48\h,1},\dotsc,X_{48\h,20} \right).
+\end{align*}
+
+Aufgrund des gleitenden Trainingsfensters hängen die geschätzten Regressionsparameter und damit die konkrete Vorhersageverteilung vom Verifikationstag ab. Im Vergleich zur empirischen Vorhersage, verwenden wir jedoch zur Schätzung nicht die gesamte Information des Ensembles sondern jeweils den Ensemblemittelwert und die Ensemble Standardabweichung. Diese bezeichnen wir mit $\bar{X}$  bzw. $S$.
+
+\begin{align*}
+F^{\mathrm{global}}_{24\h} &= \mathcal{N}\!\left(\hat{b}_{0,24\h}^{(\mathfrak{T})} + \hat{b}_{1,24\h}^{(\mathfrak{T})} \cdot \bar{X}_{24\h},\;\exp\!\left(\hat{c}^{(\mathfrak{T})}_{24\h} + \hat{d}^{(\mathfrak{T})}_{24\h}\cdot S_{24\h}\right)^2\right), \\
+&\sigma\!\left( F^{\mathrm{global}}_{24\h} \right) = \sigma\!\left( \bar X_{24\h}, S_{24\h}, \mathfrak{T} \right)\\
+    F^{\mathrm{global}}_{48\h} &= \mathcal{N}\!\left(\hat{b}_{0,48\h}^{(\mathfrak{T})} + \hat{b}_{1,48\h}^{(\mathfrak{T})} \cdot \bar{X}_{48\h},\;\exp\!\left(\hat{c}^{(\mathfrak{T})}_{48\h} + \hat{d}^{(\mathfrak{T})}_{48\h}\cdot S_{48\h}\right)^2\right), \\
+&\sigma\!\left( F^{\mathrm{global}}_{48\h} \right) = \sigma\!\left( \bar X_{48\h}, S_{48\h}, \mathfrak{T} \right)
+\end{align*}
+
+Zur lokalen Vorhersage kommt hinzu, dass die Regressionsparameter abhängig von der Position der Gitterzelle sind.
+\begin{align*}
+    F^{\mathrm{lokal}}_{24\h} &= \mathcal{N}\!\left(\hat{b}_{0,\mathfrak{L},24\h}^{(\mathfrak{T})} + \hat{b}_{1,\mathfrak{L},24\h}^{(\mathfrak{T})} \cdot \bar{X}_{24\h},\;\exp\!\left(\hat{c}^{(\mathfrak{T})}_{\mathfrak{L},24\h} + \hat{d}^{(\mathfrak{T})}_{\mathfrak{L},24\h}\cdot S_{24\h}\right)^2\right), \\
+&\sigma\!\left( F^{\mathrm{lokal}}_{24\h} \right) = \sigma\!\left( \bar X_{24\h}, S_{24\h}, \mathfrak{T}, \mathfrak{L} \right),\\
+    F^{\mathrm{lokal}}_{48\h} &= \mathcal{N}\!\left(\hat{b}_{0,\mathfrak{L},48\h}^{(\mathfrak{T})} + \hat{b}_{1,\mathfrak{L},48\h}^{(\mathfrak{T})} \cdot \bar{X}_{48\h},\;\exp\!\left(\hat{c}^{(\mathfrak{T})}_{\mathfrak{L},48\h} + \hat{d}^{(\mathfrak{T})}_{\mathfrak{L},48\h}\cdot S_{48\h}\right)^2\right), \\
+&\sigma\!\left(F^{\mathrm{lokal}}_{48\h}\right) = \sigma\!\left( \bar X_{48\h}, S_{48\h}, \mathfrak{T}, \mathfrak{L} \right)
+\end{align*}
+
+
+Zusammen mit der Temperaturbeobachtung  $Y$ ergeben sich die Vorhersage-Beobacht\-ungs\-größen für jede Kombination aus Gitterzelle, Verifikationstag, Vorhersagehorizont und Vorhersageverfahren
+\begin{equation} \label{eq:weather_room}
+  \left(F^{\mathrm{emp}}_{24\h}, F^{\mathrm{global}}_{24\h},  F^{\mathrm{lokal}}_{24\h}, F^{\mathrm{emp}}_{48\h}, F^{\mathrm{global}}_{48\h},  F^{\mathrm{lokal}}_{48\h}, Y \right) .
+\end{equation}
+Dadurch erhalten wir für jede Beobachtung aus Gitterzelle, Verifikationstag, Vorhersagehorizont und Vorhersageverfahren Vorhersage-Beobachtungspaare der Form
+\begin{equation}
+    \left( F^{\mathrm{emp}}_{24\mathrm{h},1}, \dots, F^{\mathrm{lokal}}_{48\mathrm{h},1}, y_1 \right), \dots, \left( F^{\mathrm{emp}}_{24\mathrm{h},n}, \dots, F^{\mathrm{lokal}}_{48\mathrm{h},n}, y_n \right)
+\end{equation}
+wobei $i=1,\dotsc,n \quad n=30 \times1748$ eine arbiträre Indizierung der Daten darstellt , 
+die wir im Sinne des Vorhersageraums als Stichprobe der gemeinsamen Verteilung von \eqref{eq:weather_room} interpretieren unter dem Wahrscheinlichkeitsmaß $\PW$.
+
+
+\chapter{Konsistenzbänder für Reliabilitätsdiagramme}
+
+\section{Marginale Kalibrierung}\label{seq:consist_marg}
+Wir erstellen Konsistenzbänder unter der Voraussetzung marginaler Kalibrierung. Die Idee besteht darin, die empirische marginale Vorhersageverteilung $\hat{F}_{mg}$ als Grundlage zur Generierung der Beobachtungen zu verwenden. Dazu führen wir ein Monte-Carlo-Resampling mit $m$ Replikationen durch. Für jede Replikation $j = 1, \dots, m$ wird eine Stichprobe der Größe $n$ aus $\hat{F}_{mg}$ erzeugt.
+
+Die Simulation aus $\hat{F}_{mg}$ erfolgt gemäß dem in \textcite{gneiting2023regression} beschriebenen und im ergänzenden Material \parencite{gneiting2023supp} implementierten Verfahren. Dazu wird wiederholt ein Index
+\[
+I \sim \mathrm{Unif}(\{1,\dots,n\})
+\]
+gezogen und anschließend eine Realisation aus der zugehörigen Vorhersageverteilung $F_I$ simuliert. Konkret ziehen wir zunächst
+\[
+I^{(j)}_1,\dots,I^{(j)}_n \sim \mathrm{Unif}(\{1,\dots,n\})
+\]
+und anschließend
+\[
+\hat y^{(j)}_i \sim F_{I^{(j)}_i},
+\qquad i=1,\dots,n,
+\]
+sodass
+\[
+\hat y^{(j)}_1,\dots,\hat y^{(j)}_n \sim \hat F_{mg}.
+\]
+Für jede Replikation $j$ berechnen wir anschließend die empirische Verteilungsfunktion
+\[
+\hat{F}^{(j)}(t)
+=
+\frac{1}{n}
+\sum_{i=1}^n
+\mathds{1}\{\hat y^{(j)}_i \le t\}.
+\]
+Damit erhalten wir $m$ Realisationen empirischer Verteilungsfunktionen, die auf unabhängigen Stichproben aus $\hat{F}_{mg}$ basieren.
+
+Nun können wir die punktweisen Konsistenzbänder bestimmen. Für ein festes $t \in \R$ betrachten wir die Werte
+\[
+\hat{F}^{(1)}(t),\dots,\hat{F}^{(m)}(t)
+\]
+und bestimmen daraus rangbasiert die empirischen Quantile eines $\gamma$-Konsistenzbands. Hierzu sortieren wir die Werte zunächst aufsteigend und bestimmen die unteren und oberen Quantile durch symmetrisches Abschneiden an
+\[
+\mathrm{low}=\left\lfloor m\cdot\frac{1-\gamma}{2}\right\rfloor+1,
+\quad
+\mathrm{up}=m-\mathrm{low}+1.\]
+Daraus ergeben sich die untere und obere Grenze des $\gamma$-Konsistenzbands am Punkt $t$ als
+\[
+\ell(t)=\hat F^{(\mathrm{low})}(t),
+\quad
+u(t)=\hat F^{(\mathrm{up})}(t),\]
+wobei sich die Indizes auf die sortierten Werte beziehen.
+
+
+\section{Probabilistische Kalibrierung} \label{seq:consist_pit}
+Für Probabilistische Kalibrierung erstellen wir die Konsistenzbänder unter der Voraussetzung, dass die \[Z_{F,1}, \dots, Z_{F,n} \overset{\text{i.i.d.}}{\sim} \mathcal{U}(0,1)\] unabhängig und identisch stetig gleichverteilt sind. Dann ist
+\[
+\mathds{1}\{Z_{F,i} \le \alpha\} \sim \mathrm{Bernoulli}(\alpha) \quad \text{und} \quad
+\sum_{i=1}^{n} \mathds{1}\{Z_{F,i} \le \alpha\} \sim \mathrm{Bin}(n,\alpha),
+\]
+wobei $\mathrm{Bin}$ für die Binomialverteilung steht. Insbesondere gilt
+\[
+\frac{1}{n}\sum_{i=1}^{n} \mathds{1}\{Z_{F,i} \le \alpha\}
+= \frac{1}{n} B, \quad \text{mit } B \sim \mathrm{Bin}(n,\alpha).
+\]
+Daraus können wir jetzt die punktweisen Konsistenzbänder erzeugen. Für $\alpha \in (0,1)$ und ein Niveau $\gamma$ definieren die unteren und oberen Grenzen als
+\[
+\ell(\alpha) \coloneqq \frac{1}{n} q_{(1-\gamma)/2}\bigl(\mathrm{Bin}(n,\alpha)\bigr),
+\qquad
+u(\alpha) \coloneqq   \frac{1}{n} q_{\big(1-((1-\gamma)/2)\big)}\bigl(\mathrm{Bin}(n,\alpha)\bigr),
+\]
+wobei $q_{p}\bigl(\mathrm{Bin}(n,\alpha)\bigr)$ das $p$-Quantil der Binomialverteilung bezeichnet.
+
+Dieser Ansatz entspricht weitgehend dem von \textcite{gneiting2023regression}. Sie nutzten jedoch Monte-Carlo-Simulation zur Approximation der punktweisen Konsistenzbänder anstatt der hier beschrieben direkten Berechnung. Dadurch ist die Berechnung deterministisch.
+
+
+\section{\texorpdfstring{Bedingte $\alpha$-Quantilkalibrierung}{Bedingte alpha-Quantilkalibrierung}}
+\label{sec:consistent_quant}
+Im Folgenden beschreiben wir die Methode von \textcite[B]{gneiting2023regression} implementiert in \textcite{gneiting2023supp}. Wir betrachten Vorhersage-Beobachtungspaare der Form \eqref{eq:qaunt_stich_emp}. Wie für marginale Kalibrierung führen wir ein Monte-Carlo-Resampling für $m$ Replikationen durch. Für jede Replikation $j = 1, \dots, m$ wird durch Resampling eine Stichprobe der Größe $n$ generiert.
+
+Die Grundidee besteht darin, unter der Annahme unabhängiger und austauschbarer Residuen sowie der Unabhängigkeit der Residuen von den vorhergesagten Quantilen Bootstrap-Stichproben zu konstruieren, bezüglich derer die Vorhersage $\alpha$-quantilkalibriert ist. Anschließend wird auf die Vorhersage zusammen mit den Stichproben der PAV-Algorithmus angewendet. Dadurch erhalten wir Stichproben rekalibrierter Werte.
+
+Um diese Stichproben zu ziehen nutzen wir einen residuumsbasierten Ansatz. Zunächst werden empirische Residuen erneut gezogen und global um ihr empirisches $\alpha$-Quantil verschoben.
+Seien
+\[
+r_i = y_i - x_i, \qquad i=1,\dots,n,
+\]
+die empirischen Residuen. Unter der Annahme, dass die Residuen unabhängig und austauschbar sind, erzeugen wir Bootstrap-Stichproben von $Y$ durch Ziehen von Indizes
+\[
+I_i^{(j)} \sim \mathrm{Unif}(\{1,\dots,n\}),\quad i=1,\dots,n
+\]
+und setzen
+\[
+\tilde r_i^{(j)} := r_{I_i^{(j)}}\;.
+\]
+Dann sind
+\[
+    x_i + \tilde r_i^{(j)}.
+\]
+Stichproben aus $Y$. 
+
+Auf der Ebene zugrundeliegenden Zufallsvariablen ist jedoch die Quantilvorhersage $X$ bzgl. der Beobachtungen $Y$ im Allgemeinen nicht $\alpha$-quantilkalibriert. Unter der zusätzlichen Annahme, dass das Residuum $R\coloneqq Y-X$ unabhängig von $X$ ist, gilt für jedes $c\in\mathbb R$
+\[
+\PW(Y \le X+c \mid X) = \PW(Y-X \le c \mid X) = \PW(Y-X \le c).
+\]
+Damit sind unbedingte und bedingte $\alpha$-Quantilkalibrierung gemäß \eqref{eq:unb_quantcal_lower} und \eqref{eq:cond_quantcal_lower} äquivalent.
+Wählen wir nun
+\[
+    c := q_\alpha(R)
+\]
+als $\alpha$-Quantil des Residuums, so folgt
+\[
+    \PW(Y \le X+c)\ge \alpha \quad\text{und} \quad \PW(Y < X+c)\le \alpha.
+\]
+Somit ist $X+c$ unbedingt $\alpha$-quantilkalibriert bzgl. $Y$ gemäß \eqref{eq:unb_quantcal_lower} und nach Voraussetzung auch bedingt gemäß \eqref{eq:cond_quantcal_lower}. Analog ist $X$ bezüglich $Y-c$ $\alpha$-quantilkalibriert.
+
+Dieses Prinzip übertragen wir nun auf die Bootstrap-Stichproben, indem wir eine Verschiebung um das empirische Quantil der Residuen $\hat c$ vornehmen. Auf diese Weise erhalten wir Stichproben aus $Y-c$
+\[
+    \tilde y_i^{(j)} = x_i + \tilde r_i^{(j)} - \hat c
+\]
+und somit $\alpha$-quantilkalibrierte Vorhersage-Beobachtungs Replikationen
+\[
+(x_1,\tilde y_1^{(j)}),\dotsc,(x_n,\tilde y_n^{(j)}).
+\]
+
+Auf diese Paare wenden wir nun wieder den PAV-Algorithmus an und erhalten somit Replikationen von rekalibrierten Werten
+\[
+(x_1,\hat x_1^{(j)}),\dotsc,(x_n,\hat x_n^{(j)}).
+\]
+Nun können wir analog zur Methode bei der marginalen Kalibrierung für die Vorhersagen das punktweise Konsistenzband bestimmen. Für ein $x_i$ betrachten wir die Werte aller Realisationen der rekalibrierten Werte
+\[
+\hat x_i^{(1)}, \dotsc, \hat x_i^{(m)}
+\]
+und bestimmen rangbasiert die empirischen Quantile für das punktweise $\gamma$-Konsistenzband, indem wir 
+die Werte zunächst aufsteigend sortieren und anschließend durch symmetrisches Abschneiden an den Schnittstellen 
+\[
+\mathrm{low} \coloneqq \left\lfloor m \cdot \frac{1-\gamma}{2} \right\rfloor+1, 
+\quad
+\mathrm{up} \coloneqq m - \mathrm{low}+1
+\]
+bestimmen. Daraus ergeben sich die untere und obere Grenze des $\gamma$-Konsistenzbands für $x_i$ als
+\[
+\ell(x_i) \coloneqq \hat x_i^{(\mathrm{low})}, \quad
+u(x_i) \coloneqq \hat x_i^{(\mathrm{up})},
+\]
+wobei sich die Indizes auf die aufsteigend sortierten Werte beziehen. 
+
+\textcite{gneiting2023regression} bezeichnen diesen Ansatz selbst als ein vergleichsweise grobes Verfahren, das auf klassischen Annahmen beruht. Sie sehen den Nutzen des Ansatzes vor allem in einer heuristischen Orientierung für Kalibrierungsanalysen.
+
+
+
+
+
+
+
+\chapter{Weitere Beispiele und Ergebnisse zu Kalibrierung und Scores} \label{chap:other_examp}
+\section{Beispiele}
+\begin{bsp}[Die unfokussierte Vorhersage ist probabilistisch, aber nicht marginal kalibriert ] \label{bsp:kalunfoc}
+Das folgende Beispiel stammt aus \textcite{Gneiting2007} und wird im Folgenden ausführlich hergeleitet. Wir betrachten den Vorhersagegegenstand aus Beispiel \ref{bsp:auto_kal} und dazu die Vorhersage
+\[
+F=\frac{1}{2}\N(\mu,1)+\frac{1}{2}\N(\mu + \tau,1)
+\]
+Es handelt sich um eine Mischverteilung, wobei $\tau$ gleichwahrscheinlich aus $\tau \in \{-1,1\}$ und unabhängig von $\mu$ ist. Um zu zeigen, dass $F$ probabilistisch kalibriert ist führen wir zunächst folgende Notation ein. Sei $\Phi$ die Verteilungsfunktion der Standardnormalverteilung. Dann schreiben wir
+\[
+\Phi_\pm(x) \coloneqq \frac{1}{2}\big(\Phi(x)+\Phi(x \pm \tau) \big)
+\]
+also
+\[
+\Phi_+(x) \coloneqq \frac{1}{2}\big(\Phi(x)+\Phi(x - 1) \big) \qquad \Phi_-(x) \coloneqq \frac{1}{2}\big(\Phi(x)+\Phi(x + 1) \big)
+\]
+und halten fest, dass durch die Symmetrie der Normalverteilung gilt
+\begin{equation} \label{eq::unfoc}
+\Phi_-(x)=1-\Phi_+(-x) \;\; \text{woraus} \;\; \Phi^{-1}_-(\alpha)= \Phi^{-1}_+(\alpha)-1 \;\; \text{folgt}.
+\end{equation}
+Damit können wir jetzt zeigen, dass die Vorhersage probabilistisch kalibriert ist. Sei $\alpha \in (0,1)$, dann
+
+\begin{align*}
+    \PW(F(Y) \le \alpha) &= \E_{\mu,\tau}[\PW(F(Y) \le \alpha \mid \mu,\tau)]  && \text{,iterierter Erwartungswert}\\
+                         &= \E_{\mu,\tau}[\PW(Y \le F^{-1}(\alpha) \mid \mu,\tau)] && ,F^{-1}(\alpha)=\inf\{y: F(y)\ge \alpha\}  \\
+                         &= \E_{\mu,\tau}\big[\Phi\big(F^{-1}(\alpha)-\mu \big)\big] && \text{,$Y \mid \mu \sim \mathcal{N}(\mu,1)$} \\
+                         &= \E_\tau \big[\Phi\big(\Phi^{-1}_\pm(\alpha)\big)\big] && \text{,$F^{-1}(\alpha)=\Phi^{-1}_\pm(\alpha)+\mu$} \\
+                         &= \tfrac{1}{2} \Phi\big(\Phi^{-1}_-(\alpha)\big) + \tfrac{1}{2} \Phi\big(\Phi^{-1}_+(\alpha)\big) && \text{,$\tau$ gleichvert. $-1, 1$} \\
+                         &= \tfrac{1}{2}\left( \; \Phi\big(\Phi^{-1}_+(\alpha)-1\big) + \Phi\big(\Phi^{-1}_+(\alpha)\big) \; \right) && \text{,\eqref{eq::unfoc}} \\
+                         &= \Phi_+(\Phi^{-1}_+(\alpha)) && \text{,Def. anwenden} \\
+                         &= \alpha.
+\end{align*}
+
+%guck nochmal noch, dass b nicht vielleicht positiv sein muss oder so
+\noindent
+%dafür brauche ich noch eine Quelle!!. Zur not die Version mit sigma^2 = 1 dann bin ich auf der sicheren seite
+Hingegen ist die Vorhersage nicht marginal kalibriert. Dafür benutzen wir folgende Identität. Sei $X \sim \N(u,\sigma^2), a,b \in \R,  b > 0$ dann ist
+\begin{equation} \label{eq::normalidentity}
+\E \left[ \Phi \left(\frac{a-X}{b} \right) \right] = \Phi \left(\frac{a-u}{\sqrt{b^2+\sigma^2}} \right)
+\end{equation}{}
+
+\noindent
+Sei $y \in \R$
+\begin{align*}
+    \E[F(y)] &= \E_{\mu,\tau}[F(y)] \\
+                 &= \E_{\mu,\tau}[\Phi_\pm(y-\mu)] \\
+                 &= \E_{\mu}[\tfrac{1}{2} \Phi_-(y-\mu)+\tfrac{1}{2} \Phi_+(y-\mu)] \\
+                 &= \E_{\mu}\left[\tfrac{1}{2}\Phi(y-\mu)+\tfrac{1}{4} \Phi(y-(\mu+1)) + \tfrac{1}{4}\Phi(y-(\mu-1)) \right] \\
+                 &= \tfrac{1}{2}\E_{\mu}\left[\Phi(y-\mu) \right]+\tfrac{1}{4}\E_{\mu}\left[ \Phi(y-(\mu+1)) \right]  + \tfrac{1}{4}\E_{\mu}\left[\Phi(y-(\mu-1)) \right] \\
+                 &= \tfrac{1}{2}\Phi \left(\tfrac{y}{2} \right) + \tfrac{1}{4}\Phi \left(\tfrac{y-1}{2} \right) +\tfrac{1}{4}\Phi \left(\tfrac{y+1}{2} \right) && \text{,\eqref{eq::normalidentity}} \\
+\end{align*} 
+\noindent
+Daraus können wir die marginale Verteilung von $F$ auslesen und erkennen sofort, dass $F$ nicht marginal kalibriert ist.
+\[
+\E_\PW[F] = \tfrac{1}{2}\N(0,2) + \tfrac{1}{4}\N(1,2) + \tfrac{1}{4}\N(-1,2) \neq \N(0,2) = \LW(Y)
+\]
+
+\end{bsp}{}
+
+
+
+\begin{bsp}[Proper Score ist nicht notwendig informativ für die Beurteilung einer gesamten Vorhersage]
+\label{bsp:propernogood}
+Betrachten wir den Erwartungswert als Funktional $T(Q) \coloneqq \mathbb{E}_{Y \sim Q}[Y]$, dann lässt sich zeigen, dass der Score
+\[
+S_T(x,y) = (x - y)^2
+\]
+konsistent bzgl. $T$ ist. Den durch $S_T(x,y)$ induzierten proper Score können wir folgendermaßen definieren
+\[
+S(P,y) \coloneqq S_T(\mathbb{E}_{X \sim P}[X], y) = (\mathbb{E}_{X \sim P}[X] - y)^2.
+\]
+Für den erwarteten Score gilt dann
+\begin{align*}
+    \E_{Y \sim Q}[S(P,Y)]&=\E_{Y \sim Q}[S_T(\E_{X \sim P}[X], Y)]\\
+    &= \E_{Y \sim Q}[(\E_{X \sim P}[X] - Y)^2]\\ 
+    &= \mathrm{Var}_Q(Y) + (\E_{X \sim P}[Y]-\E_{Y \sim Q}[Y])^2
+\end{align*}
+Sei nun ein Vorhersagegegenstand $Y \sim Q=\mathcal{N}(4,16)$ gegeben. Wir betrachten jetzt drei verschiedene Vorhersagen von $Y$: \[P_1=\mathcal{N}(4,81),\quad P_2=\mathcal{N}(3,15),\quad P_3=\mathcal{N}(4,15).\]
+Für die Vorhersagen und die wahre Verteilung erhalten wir:
+\begin{itemize}
+    \item $\E_{Q}[S(Q,Y)] =  16$
+    \item $\E_{Q}[S(P_1,Y)]  = 16 + (4-4)^2 = 16$
+    \item $\E_{Q}[S(P_2,Y)] = 16 + (3-4)^2 = 17$
+    \item $\E_{Q}[S(P_3,Y)] = 16 + (4-4)^2 = 16$
+\end{itemize}
+und somit
+\[ 
+\E_{Q}[S(Q,Y)]=\E_{Q}[S(P_1,Y)]=\E_{Q}[S(P_3,Y)]<\E_{Q}[S(P_2,Y)]
+\]
+Anhand dieser Scores fiele unsere Wahl der besten Vorhersage auf $P_1$ oder $P_3$. Gleichzeitig können wir jedoch erkennen, dass $P_1$, aufgrund der hohen Unsicherheit, eine deutlich schlechtere Vorhersage als $P_2$ und vor allem $P_3$ ist. 
+
+Das Beispiel zeigt, dass Properness allein nicht ausreicht, um die Qualität einer vollständigen Vorhersageverteilung zu beurteilen. Der Score $S$ ist lediglich sensitiv gegenüber dem Erwartungswert und ignoriert sämtliche weiteren Verteilungseigenschaften. Daher können sehr unterschiedliche Vorhersageverteilungen denselben erwarteten Score erhalten, solange sie denselben Erwartungswert besitzen. Dies macht den Score für die Bewertung der gesamten Vorhersageverteilung ungeeignet.
+\end{bsp}
+
+
+
+\section{Ergebnisse zur Score Zerlegung mit Skill Score} \label{seq:decomp-table}
+
+\input{figs/decomp_table}
